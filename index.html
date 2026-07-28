@@ -90,7 +90,7 @@ tbody tr:hover{background:var(--soft)}
 td.unit{color:var(--muted);font-size:14px;white-space:nowrap}
 td.price{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
 td.act{width:1%;white-space:nowrap;text-align:right}
-.order{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:var(--canvas);color:var(--text);font-size:13px;font-weight:600;text-decoration:none}
+.order{display:inline-flex;align-items:center;justify-content:center;min-width:104px;min-height:34px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:var(--canvas);color:var(--text);font-family:inherit;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer}
 .order:hover{background:var(--green-soft);border-color:#bcdccb;color:#2f6b4c}
 .empty{padding:40px 20px;text-align:center;color:var(--muted)}
 
@@ -119,6 +119,38 @@ footer{border-top:1px solid var(--border);padding:32px 0;font-size:14px;color:va
 footer b{color:var(--text)}
 .fab{position:fixed;right:20px;bottom:20px;z-index:60;display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 20px;border-radius:999px;background:var(--green);color:#fff;font-weight:600;font-size:15px;text-decoration:none;box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.14)}
 .fab:hover{filter:brightness(.95)}
+.fab{border:0;font-family:inherit;cursor:pointer}
+.fab-badge{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff;color:var(--green);font-size:12px;font-weight:700;display:grid;place-items:center}
+
+/* Keranjang */
+.cart-ov{position:fixed;inset:0;background:rgba(20,20,19,.38);z-index:70;opacity:0;transition:opacity .18s ease}
+.cart-ov.show{opacity:1}
+.cart{position:fixed;top:0;right:0;bottom:0;width:400px;max-width:100%;background:var(--canvas);z-index:80;display:flex;flex-direction:column;transform:translateX(102%);transition:transform .22s ease;box-shadow:-8px 0 32px rgba(0,0,0,.12)}
+.cart.open{transform:none}
+.cart-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.cart-head b{font-size:17px;letter-spacing:-.01em}
+.cart-close{border:0;background:var(--surface2);width:32px;height:32px;border-radius:8px;font-size:18px;line-height:1;cursor:pointer;color:var(--muted)}
+.cart-body{flex:1;overflow-y:auto;padding:8px 20px}
+.cart-empty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center}
+.ci{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.ci-t{flex:1;min-width:0}
+.ci-t b{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em}
+.ci-t span{font-size:12px;color:var(--muted)}
+.ci-s{width:92px;text-align:right;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.qty{display:flex;align-items:center;gap:2px;background:var(--surface2);border-radius:8px;padding:2px}
+.qty button{width:26px;height:26px;border:0;background:transparent;border-radius:6px;font-size:15px;line-height:1;cursor:pointer;color:var(--text)}
+.qty button:hover{background:var(--canvas)}
+.qty span{min-width:24px;text-align:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.cart-foot{border-top:1px solid var(--border);padding:16px 20px 20px;background:var(--soft)}
+.cart-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.cart-total span{font-size:14px;color:var(--muted)}
+.cart-total b{font-size:21px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cart-min{margin:0 0 12px;font-size:12.5px;color:#8a5320;background:var(--orange-soft);border:1px solid #f0d6bd;border-radius:8px;padding:9px 12px}
+.btn-block{display:flex;width:100%;justify-content:center}
+.cart-clear{display:block;width:100%;margin-top:10px;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;cursor:pointer;padding:6px}
+.cart-clear:hover{color:var(--text)}
+.pay{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pay span{font-size:12px;font-weight:600;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 11px}
 
 @media (max-width:820px){
   .hero-grid{grid-template-columns:1fr;gap:24px}
@@ -138,8 +170,10 @@ footer b{color:var(--text)}
   .tablewrap{-webkit-overflow-scrolling:touch}
   .cta{padding:48px 0 104px}
   .cat-head{padding:14px}
-  .fab span{display:none}
-  .fab{padding:0 18px;min-width:52px;justify-content:center}
+  .fab span:not(.fab-badge){display:none}
+  .fab{padding:0 16px;justify-content:center}
+  .cart{width:100%}
+  .ci-s{width:80px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -217,9 +251,9 @@ footer b{color:var(--text)}
         <p>Tiga langkah, tanpa aplikasi tambahan.</p>
       </div>
       <div class="grid3">
-        <div class="card"><div class="n">1</div><h3>Pilih produk</h3><p>Cek harga di price list, catat merek dan ukuran kemasan yang dibutuhkan.</p></div>
-        <div class="card"><div class="n">2</div><h3>Kirim pesanan</h3><p>Tekan tombol Pesan pada baris produk. Pesan WhatsApp otomatis terisi nama produknya.</p></div>
-        <div class="card"><div class="n">3</div><h3>Konfirmasi &amp; kirim</h3><p>Kami konfirmasi stok, total, dan jadwal antar. Barang dikirim ke alamat Anda.</p></div>
+        <div class="card"><div class="n">1</div><h3>Pilih produk</h3><p>Tekan tombol <b>+ Keranjang</b> pada produk yang dibutuhkan.</p></div>
+        <div class="card"><div class="n">2</div><h3>Cek keranjang</h3><p>Buka keranjang, atur jumlah tiap barang. Total belanja dihitung otomatis.</p></div>
+        <div class="card"><div class="n">3</div><h3>Bayar &amp; kirim</h3><p>Tekan Kirim Pesanan via WhatsApp. Kami konfirmasi stok dan ongkir, lalu Anda bayar tunai saat barang tiba, transfer, atau QRIS.</p></div>
       </div>
     </div>
   </section>
@@ -280,7 +314,23 @@ footer b{color:var(--text)}
   </div>
 </footer>
 
-<a class="fab" id="wa-fab" href="#" aria-label="Chat WhatsApp">&#9993;<span>Chat WhatsApp</span></a>
+<button class="fab" id="cart-fab" aria-label="Buka keranjang belanja">&#128722;<span>Keranjang</span><span class="fab-badge" id="fab-count" hidden>0</span></button>
+
+<div class="cart-ov" id="cart-ov" hidden></div>
+<aside class="cart" id="cart" aria-hidden="true" aria-label="Keranjang belanja">
+  <div class="cart-head">
+    <b>Keranjang Belanja</b>
+    <button class="cart-close" id="cart-close" aria-label="Tutup keranjang">&times;</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span>Total belanja</span><b id="cart-total">Rp 0</b></div>
+    <p class="cart-min" id="cart-min" hidden></p>
+    <button class="btn btn-primary btn-block" id="cart-wa">Kirim Pesanan via WhatsApp</button>
+    <button class="cart-clear" id="cart-clear">Kosongkan keranjang</button>
+    <div class="pay"><span>Tunai / COD</span><span>Transfer bank</span><span>QRIS</span></div>
+  </div>
+</aside>
 
 <script>
 /* =========================================================================
@@ -289,7 +339,9 @@ footer b{color:var(--text)}
 const KONFIG = {
   nomorWA: "6282123548060",      // format internasional, tanpa tanda + dan spasi
   nomorTampil: "0821-2354-8060",
-  tanggalUpdate: "28 Juli 2026"
+  tanggalUpdate: "28 Juli 2026",
+  minOrder: 300000,          // minimal belanja untuk pengantaran (angka saja)
+  rekening: "BCA 1234567890 a.n. UB Rancaekek"   // ganti dengan rekening asli
 };
 
 /* =========================================================================
@@ -374,7 +426,7 @@ document.getElementById("wa-text").textContent = KONFIG.nomorTampil;
 document.getElementById("wa-header").href = waLink("Halo UB Rancaekek, saya mau tanya harga sembako.");
 document.getElementById("wa-hero").href   = waLink("Halo UB Rancaekek, saya mau tanya stok dan ongkir.");
 document.getElementById("wa-cta").href    = waLink("Halo UB Rancaekek, ini daftar belanja saya:\n1. ");
-document.getElementById("wa-fab").href    = waLink("Halo UB Rancaekek, saya mau pesan sembako.");
+
 
 document.getElementById("stat-item").textContent = DATA.reduce((a,c)=>a+c.items.length,0);
 document.getElementById("stat-cat").textContent  = DATA.length;
@@ -403,7 +455,7 @@ list.innerHTML = DATA.map((c,i) => `
               <td>${it.n}</td>
               <td class="unit">${it.u}</td>
               <td class="price">${rp(it.h)}</td>
-              <td class="act"><a class="order" href="${waLink("Halo UB Rancaekek, saya mau pesan:\n"+it.n+" — "+it.u+" ("+rp(it.h)+")\nJumlah: ")}">Pesan</a></td>
+              <td class="act"><button class="order" data-n="${it.n}" data-u="${it.u}" data-h="${it.h}">+ Keranjang</button></td>
             </tr>`).join("")}
           </tbody>
         </table>
@@ -458,6 +510,108 @@ function saring(){
   empty.hidden = terlihat > 0;
 }
 saring();
+
+/* =========================================================================
+   4. KERANJANG BELANJA — total otomatis, checkout ke WhatsApp
+   ========================================================================= */
+const KUNCI = "ubr-keranjang";
+let keranjang = [];
+try { keranjang = JSON.parse(localStorage.getItem(KUNCI)) || []; } catch(e) { keranjang = []; }
+
+const cartEl   = document.getElementById("cart");
+const cartOv   = document.getElementById("cart-ov");
+const cartBody = document.getElementById("cart-body");
+const fabCount = document.getElementById("fab-count");
+const cartMin  = document.getElementById("cart-min");
+
+const totalBelanja = () => keranjang.reduce((s,i) => s + i.h * i.q, 0);
+
+function simpanKeranjang(){
+  try { localStorage.setItem(KUNCI, JSON.stringify(keranjang)); } catch(e) {}
+}
+
+function gambarKeranjang(){
+  simpanKeranjang();
+  const jml = keranjang.reduce((s,i) => s + i.q, 0);
+  fabCount.textContent = jml;
+  fabCount.hidden = jml === 0;
+  const total = totalBelanja();
+  document.getElementById("cart-total").textContent = rp(total);
+  if (total > 0 && total < KONFIG.minOrder) {
+    cartMin.hidden = false;
+    cartMin.textContent = "Minimal " + rp(KONFIG.minOrder) + " untuk pengantaran. Kurang " + rp(KONFIG.minOrder - total) + " lagi, atau pesanan bisa diambil langsung di toko.";
+  } else {
+    cartMin.hidden = true;
+  }
+  cartBody.innerHTML = keranjang.length
+    ? keranjang.map((i,ix) => `
+      <div class="ci">
+        <div class="ci-t"><b>${i.n}</b><span>${i.u} · ${rp(i.h)}</span></div>
+        <div class="qty">
+          <button data-ix="${ix}" data-d="-1" aria-label="Kurangi jumlah">&minus;</button>
+          <span>${i.q}</span>
+          <button data-ix="${ix}" data-d="1" aria-label="Tambah jumlah">+</button>
+        </div>
+        <div class="ci-s">${rp(i.h * i.q)}</div>
+      </div>`).join("")
+    : '<p class="cart-empty">Keranjang masih kosong.<br>Tekan tombol <b>+ Keranjang</b> pada produk yang ingin dipesan.</p>';
+}
+
+function bukaKeranjang(){
+  cartOv.hidden = false;
+  requestAnimationFrame(() => cartOv.classList.add("show"));
+  cartEl.classList.add("open");
+  cartEl.setAttribute("aria-hidden", "false");
+}
+function tutupKeranjang(){
+  cartOv.classList.remove("show");
+  setTimeout(() => { cartOv.hidden = true; }, 180);
+  cartEl.classList.remove("open");
+  cartEl.setAttribute("aria-hidden", "true");
+}
+
+list.addEventListener("click", e => {
+  const btn = e.target.closest(".order");
+  if (!btn) return;
+  const n = btn.dataset.n, u = btn.dataset.u, h = Number(btn.dataset.h);
+  const ada = keranjang.find(i => i.n === n && i.u === u);
+  if (ada) ada.q++; else keranjang.push({ n, u, h, q: 1 });
+  gambarKeranjang();
+  btn.textContent = "\u2713 Masuk";
+  setTimeout(() => { btn.textContent = "+ Keranjang"; }, 900);
+});
+
+cartBody.addEventListener("click", e => {
+  const btn = e.target.closest("button[data-ix]");
+  if (!btn) return;
+  const ix = Number(btn.dataset.ix);
+  keranjang[ix].q += Number(btn.dataset.d);
+  if (keranjang[ix].q < 1) keranjang.splice(ix, 1);
+  gambarKeranjang();
+});
+
+document.getElementById("cart-fab").addEventListener("click", bukaKeranjang);
+document.getElementById("cart-close").addEventListener("click", tutupKeranjang);
+cartOv.addEventListener("click", tutupKeranjang);
+document.addEventListener("keydown", e => { if (e.key === "Escape") tutupKeranjang(); });
+
+document.getElementById("cart-clear").addEventListener("click", () => {
+  keranjang = [];
+  gambarKeranjang();
+});
+
+document.getElementById("cart-wa").addEventListener("click", () => {
+  if (!keranjang.length) return;
+  let teks = "Halo UB Rancaekek, saya mau pesan:\n\n";
+  keranjang.forEach((i, ix) => {
+    teks += (ix+1) + ". " + i.n + " — " + i.u + " x" + i.q + " = " + rp(i.h * i.q) + "\n";
+  });
+  teks += "\nTotal: " + rp(totalBelanja()) + " (belum termasuk ongkir)";
+  teks += "\n\nNama: \nAlamat lengkap: \nMetode bayar (COD / transfer / QRIS): ";
+  window.open(waLink(teks), "_blank");
+});
+
+gambarKeranjang();
 </script>
 </body>
 </html>
